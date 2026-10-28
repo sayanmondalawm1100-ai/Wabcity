@@ -1,0 +1,505 @@
+
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#087f5b">
+<title>WapCity</title>
+<style>
+:root{--g:#087f5b;--g2:#075e45;--p:#e6f5ec;--bg:#f3f7f4;--txt:#172b24;--muted:#6c7c73;--line:#e4ece6;--red:#b42318}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--txt)}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.55;cursor:not-allowed}
+.app{max-width:760px;margin:auto;min-height:100dvh;background:white;display:flex;flex-direction:column;box-shadow:0 0 30px #00000008}
+header{background:var(--g);color:white;padding:15px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-size:25px;font-weight:850;letter-spacing:-.5px}
+.sub{font-size:12px;opacity:.86;margin-top:2px}
+.iconbtn{border:1px solid #ffffff55;background:#ffffff12;color:white;border-radius:12px;padding:9px 11px}
+main{flex:1;min-height:0}
+.hidden{display:none!important}
+.auth{padding:22px 18px;max-width:480px;margin:auto}
+.logo{width:64px;height:64px;border-radius:22px;background:var(--p);display:grid;place-items:center;font-size:31px;margin:10px 0 16px}
+h1{font-size:25px;margin:0 0 7px}
+h2{font-size:19px;margin:0}
+p{color:var(--muted);line-height:1.5}
+.field{margin:14px 0}
+.field label{display:block;font-size:13px;font-weight:750;margin-bottom:7px}
+.field input,.field textarea,.search{width:100%;border:1px solid #dbe5de;border-radius:13px;padding:13px;background:white;outline:none}
+.field input:focus,.field textarea:focus,.search:focus{border-color:var(--g);box-shadow:0 0 0 3px #087f5b18}
+.primary{border:0;background:var(--g);color:white;font-weight:750;border-radius:13px;padding:13px 16px;width:100%}
+.secondary{border:1px solid #cddbd2;background:white;color:var(--g2);font-weight:700;border-radius:12px;padding:11px 13px}
+.notice{font-size:13px;padding:11px 12px;border-radius:12px;background:#f0f6f2;color:#456154;margin:12px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.notice.error{background:#fff0ef;color:var(--red)}
+.notice.success{background:#e8f7ed;color:#17633e}
+.toolbar{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;gap:9px;align-items:center}
+.search{background:#f3f7f4;border:0;border-radius:25px;padding:12px 15px;flex:1;min-width:0}
+.label{font-size:12px;font-weight:850;color:var(--g);letter-spacing:.6px;padding:16px 16px 7px;text-transform:uppercase}
+.user-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+.user-row:active{background:#f1f8f3}
+.avatar{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#dff2e6;color:var(--g2);font-weight:800;font-size:18px;flex-shrink:0;overflow:hidden}
+.row-main{min-width:0;flex:1}
+.row-title{font-weight:750}
+.row-sub{font-size:13px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
+.empty{padding:32px 18px;text-align:center;color:var(--muted)}
+.bottom{position:sticky;bottom:0;background:white;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom))}
+.navbtn{background:white;border:0;color:var(--muted);padding:8px 12px;border-radius:12px;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:74px}
+.navbtn span{font-size:20px}
+.navbtn.active{background:var(--p);color:var(--g2);font-weight:800}
+.panel{padding:18px}
+.profile-card{display:flex;align-items:center;gap:14px;margin:12px 0 20px}
+.big-avatar{width:66px;height:66px;font-size:24px}
+.chat-screen{display:flex;flex-direction:column;height:calc(100dvh - 68px);max-height:850px}
+.chat-head{display:flex;align-items:center;gap:10px;padding:10px 13px;border-bottom:1px solid var(--line)}
+.back{border:0;background:white;color:var(--g);font-size:27px;padding:2px 7px}
+.chat-head .avatar{width:42px;height:42px}
+.chat-title{font-weight:800}
+.chat-status{font-size:12px;color:var(--muted);margin-top:2px}
+.messages{flex:1;overflow:auto;padding:16px 12px;background:#f2f6f3;display:flex;flex-direction:column;gap:9px}
+.msg{max-width:84%;padding:10px 12px;border-radius:15px;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.4;box-shadow:0 1px 1px #00000006}
+.msg.mine{align-self:flex-end;background:#d7f6e2;border-bottom-right-radius:4px}
+.msg.theirs{align-self:flex-start;background:white;border-bottom-left-radius:4px}
+.meta{text-align:right;font-size:10px;color:#6e8075;margin-top:5px}
+.composer{display:flex;align-items:flex-end;gap:8px;padding:10px;border-top:1px solid var(--line);background:white;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+.composer textarea{resize:none;max-height:110px;min-height:44px;flex:1;border:1px solid #dce6df;border-radius:22px;padding:11px 14px;outline:none}
+.send{border:0;border-radius:50%;background:var(--g);color:white;width:45px;height:45px;font-size:20px}
+.small{font-size:12px;color:var(--muted)}
+.buttons{display:flex;gap:9px;flex-wrap:wrap}
+.buttons button{flex:1}
+.footer{padding:12px 16px;text-align:center;font-size:11px;color:#8b9890}
+#recaptcha-container{margin:12px 0;min-height:0}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div>
+  <div class="brand">WapCity ✦</div>
+  <div class="sub">Phone number • OTP • Chat</div>
+ </div>
+ <div>
+  <button class="iconbtn hidden" id="headerProfile" title="Profile">👤</button>
+  <button class="iconbtn hidden" id="logoutBtn" title="Logout">↪</button>
+ </div>
+</header>
+
+<main>
+<section id="authView" class="auth">
+ <div class="logo">💬</div>
+ <h1>ফোন নম্বর দিয়ে Login</h1>
+ <p>নিজের মোবাইল নম্বর দাও। SMS-এ আসা OTP যাচাই করে WapCity ব্যবহার করো।</p>
+ <div id="authNotice" class="notice hidden"></div>
+
+ <form id="phoneForm">
+  <div class="field">
+   <label for="phone">মোবাইল নম্বর</label>
+   <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+919876543210" required>
+  </div>
+  <div class="small">ভারতের নম্বর হলে +91-সহ লিখবে, যেমন +919876543210। নিজের বা অনুমতি আছে এমন নম্বরই ব্যবহার করো।</div>
+  <div id="recaptcha-container"></div>
+  <button class="primary" id="sendOtpBtn" type="submit">OTP পাঠাও</button>
+ </form>
+
+ <form id="otpForm" class="hidden">
+  <div class="field">
+   <label for="otp">SMS-এ আসা ৬ সংখ্যার OTP</label>
+   <input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="123456" required>
+  </div>
+  <button class="primary" id="verifyBtn" type="submit">OTP যাচাই করে Login</button>
+  <button type="button" class="secondary" id="changeNumber" style="width:100%;margin-top:9px">নম্বর বদলাও</button>
+ </form>
+
+ <div class="notice">Firebase Console-এ Phone sign-in চালু এবং অ্যাপের ওয়েবসাইটের ডোমেইন অনুমোদিত থাকতে হবে।</div>
+</section>
+
+<section id="setupView" class="auth hidden">
+ <div class="logo">👋</div>
+ <h1>WapCity Profile তৈরি করো</h1>
+ <p>প্রথমবার Login হয়েছে। এবার নাম ও একটি username ঠিক করো।</p>
+ <div id="setupNotice" class="notice hidden"></div>
+ <form id="setupForm">
+  <div class="field">
+   <label for="displayName">তোমার নাম</label>
+   <input id="displayName" maxlength="40" required placeholder="যেমন Sayan">
+  </div>
+  <div class="field">
+   <label for="username">Username</label>
+   <input id="username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+" required placeholder="যেমন sayan_17">
+  </div>
+  <button class="primary" id="setupBtn" type="submit">Profile Save করো</button>
+ </form>
+</section>
+
+<section id="homeView" class="hidden">
+ <div class="toolbar">
+  <input id="userSearch" class="search" placeholder="🔎 নাম বা username খুঁজুন">
+  <button class="secondary" id="myProfileBtn">Profile</button>
+ </div>
+ <div class="label">WapCity-র ইউজার</div>
+ <div id="usersList"><div class="empty">লোড হচ্ছে…</div></div>
+ <div class="footer">চ্যাট শুরু করতে কোনো ইউজারের নাম চাপো।</div>
+</section>
+
+<section id="chatView" class="hidden">
+ <div class="chat-screen">
+  <div class="chat-head">
+   <button class="back" id="backBtn">‹</button>
+   <div class="avatar" id="chatAvatar">W</div>
+   <div class="row-main">
+    <div class="chat-title" id="chatName">Chat</div>
+    <div class="chat-status" id="chatUsername"></div>
+   </div>
+  </div>
+  <div class="messages" id="messages"><div class="empty">মেসেজ লোড হচ্ছে…</div></div>
+  <form class="composer" id="messageForm">
+   <textarea id="messageText" rows="1" maxlength="3000" placeholder="মেসেজ লিখুন…" required></textarea>
+   <button class="send" id="sendBtn" type="submit">➤</button>
+  </form>
+ </div>
+</section>
+
+<section id="profileView" class="hidden panel">
+ <h2>তোমার Profile</h2>
+ <div class="profile-card">
+  <div class="avatar big-avatar" id="profileAvatar">W</div>
+  <div>
+   <div class="row-title" id="profileDisplayName">Name</div>
+   <div class="row-sub" id="profileUsername">@username</div>
+  </div>
+ </div>
+ <div id="profileNotice" class="notice hidden"></div>
+ <form id="profileForm">
+  <div class="field">
+   <label for="editName">নাম</label>
+   <input id="editName" maxlength="40" required>
+  </div>
+  <div class="field">
+   <label for="editBio">Bio</label>
+   <textarea id="editBio" maxlength="160" rows="3" placeholder="নিজের সম্পর্কে লিখুন"></textarea>
+  </div>
+  <button class="primary" type="submit">Profile Save</button>
+ </form>
+ <p class="small">ফোন: <span id="profilePhone"></span></p>
+ <div class="buttons">
+  <button class="secondary" id="profileBack">Chats-এ ফিরে যাও</button>
+  <button class="secondary" id="profileLogout">Logout</button>
+ </div>
+</section>
+</main>
+
+<nav class="bottom hidden" id="bottomNav">
+ <button class="navbtn active" data-view="home"><span>💬</span>Chats</button>
+ <button class="navbtn" data-view="profile"><span>👤</span>Profile</button>
+</nav>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+ getAuth,onAuthStateChanged,signOut,RecaptchaVerifier,
+ signInWithPhoneNumber,updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+ getFirestore,collection,doc,getDoc,setDoc,onSnapshot,
+ query,orderBy,addDoc,serverTimestamp,limit
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* Firebase Console > Project settings > Your apps > Web app থেকে নিজের config বসাও */
+const firebaseConfig = {
+  apiKey: "AIzaSyDGX2MLxRjTMlq0UAZRTRqIfuV68HaOpM4",
+  authDomain: "instacity-50740.firebaseapp.com",
+  databaseURL: "https://instacity-50740-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "instacity-50740",
+  storageBucket: "instacity-50740.firebasestorage.app",
+  messagingSenderId: "532917221151",
+  appId: "1:532917221151:web:776972330c1f9684b6222a"
+};
+
+const $=id=>document.getElementById(id);
+let app,auth,db,recaptcha=null,confirmation=null,currentUser=null;
+let currentProfile=null,usersCache=[],activePeer=null,activeChatId=null;
+let stopUsers=null,stopMessages=null;
+const views=["authView","setupView","homeView","chatView","profileView"];
+
+function showView(id){
+ views.forEach(v=>$(v).classList.toggle("hidden",v!==id));
+ $("bottomNav").classList.toggle("hidden",!currentUser||id==="chatView"||id==="authView"||id==="setupView");
+ document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",
+  (id==="homeView"&&b.dataset.view==="home")||
+  (id==="profileView"&&b.dataset.view==="profile")
+ ));
+ $("headerProfile").classList.toggle("hidden",!currentUser);
+ $("logoutBtn").classList.toggle("hidden",!currentUser);
+}
+function notice(id,msg,type=""){
+ const e=$(id);e.textContent=msg;e.className="notice"+(type?" "+type:"");
+}
+function clearNotice(id){$(id).classList.add("hidden")}
+function friendly(e){
+ const c=e?.code||"";
+ const m={
+ "auth/invalid-phone-number":"নম্বরটি ভুল। দেশের কোড-সহ লিখো, যেমন +919876543210।",
+ "auth/missing-phone-number":"মোবাইল নম্বর লিখো।",
+ "auth/too-many-requests":"অনেকবার চেষ্টা হয়েছে। পরে আবার চেষ্টা করো।",
+ "auth/quota-exceeded":"Firebase-এর SMS কোটা শেষ হয়েছে। Firebase Console-এ usage/billing দেখো।",
+ "auth/captcha-check-failed":"reCAPTCHA যাচাই হয়নি। পেজ Reload করে আবার চেষ্টা করো।",
+ "auth/invalid-verification-code":"OTP ভুল। SMS-এ আসা কোডটি আবার দেখো।",
+ "auth/code-expired":"OTP-এর মেয়াদ শেষ। নতুন OTP নাও।",
+ "auth/operation-not-allowed":"Firebase Authentication-এ Phone provider চালু করো।",
+ "permission-denied":"Firestore Rules পরীক্ষা করে Publish করো।",
+ "auth/unauthorized-domain":"Firebase Authentication Settings-এ এই hosted domain Authorized domains-এ যোগ করো।"
+ };
+ return m[c]||e?.message||"সমস্যা হয়েছে। Firebase সেটআপ ও ইন্টারনেট পরীক্ষা করো।";
+}
+function ready(){
+ return firebaseConfig.apiKey.startsWith("AIza")&&
+ firebaseConfig.projectId!=="PASTE_YOUR_PROJECT_ID"&&
+ firebaseConfig.appId!=="PASTE_YOUR_FIREBASE_APP_ID";
+}
+function initials(s){return (s||"W").trim().slice(0,1).toUpperCase()}
+function timeOf(ts){
+ try{return ts?.toDate?ts.toDate().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""}
+ catch{return ""}
+}
+function resetRecaptcha(){
+ if(recaptcha){try{recaptcha.clear()}catch{}recaptcha=null}
+ $("recaptcha-container").innerHTML="";
+}
+async function makeRecaptcha(){
+ resetRecaptcha();
+ auth.languageCode="en";
+ recaptcha=new RecaptchaVerifier(auth,"recaptcha-container",{
+  size:"normal",
+  callback:()=>{},
+  "expired-callback":()=>notice("authNotice","reCAPTCHA-র মেয়াদ শেষ। আবার চেষ্টা করো।","error")
+ });
+ await recaptcha.render();
+}
+
+$("phoneForm").addEventListener("submit",async e=>{
+ e.preventDefault();clearNotice("authNotice");
+ if(!ready()){
+  notice("authNotice","প্রথমে firebaseConfig-এ নিজের Firebase Web App config বসাও।","error");
+  return;
+ }
+ let phone=$("phone").value.trim().replace(/[\s()-]/g,"");
+ if(/^\d{10}$/.test(phone))phone="+91"+phone;
+ if(!/^\+[1-9]\d{7,14}$/.test(phone)){
+  notice("authNotice","সঠিক নম্বর দাও, যেমন +919876543210।","error");return;
+ }
+ $("sendOtpBtn").disabled=true;
+ try{
+  if(!recaptcha)await makeRecaptcha();
+  confirmation=await signInWithPhoneNumber(auth,phone,recaptcha);
+  $("phone").value=phone;
+  $("phone").readOnly=true;
+  $("phoneForm").classList.add("hidden");
+  $("otpForm").classList.remove("hidden");
+  notice("authNotice","OTP পাঠানোর অনুরোধ সফল হয়েছে। SMS দেখে কোড লিখো।","success");
+ }catch(err){
+  notice("authNotice",friendly(err),"error");resetRecaptcha();
+ }finally{$("sendOtpBtn").disabled=false}
+});
+
+$("otpForm").addEventListener("submit",async e=>{
+ e.preventDefault();clearNotice("authNotice");
+ if(!confirmation){notice("authNotice","আগে OTP পাঠাও।","error");return}
+ const code=$("otp").value.trim();
+ if(!/^\d{6}$/.test(code)){notice("authNotice","৬ সংখ্যার OTP লিখো।","error");return}
+ $("verifyBtn").disabled=true;
+ try{
+  await confirmation.confirm(code);
+  confirmation=null;$("otp").value="";
+ }catch(err){
+  notice("authNotice",friendly(err),"error");
+ }finally{$("verifyBtn").disabled=false}
+});
+
+$("changeNumber").onclick=()=>{
+ confirmation=null;$("phone").readOnly=false;
+ $("otpForm").classList.add("hidden");
+ $("phoneForm").classList.remove("hidden");
+ clearNotice("authNotice");resetRecaptcha();
+};
+
+function watchUsers(){
+ if(stopUsers)stopUsers();
+ stopUsers=onSnapshot(collection(db,"wapcityUsers"),snap=>{
+  usersCache=snap.docs.map(d=>d.data()).filter(u=>u.uid!==currentUser?.uid);
+  renderUsers($("userSearch").value);
+ },e=>console.error(e));
+}
+function renderUsers(term=""){
+ const list=$("usersList");list.innerHTML="";
+ const t=term.trim().toLowerCase();
+ const arr=usersCache.filter(u=>
+  (u.displayName||"").toLowerCase().includes(t)||
+  (u.username||"").toLowerCase().includes(t)
+ );
+ if(!arr.length){
+  list.innerHTML='<div class="empty">কাউকে পাওয়া যায়নি। অন্য নাম বা username খুঁজে দেখো।</div>';
+  return;
+ }
+ arr.sort((a,b)=>(a.displayName||"").localeCompare(b.displayName||""));
+ arr.forEach(u=>{
+  const row=document.createElement("div");row.className="user-row";
+  const av=document.createElement("div");av.className="avatar";av.textContent=initials(u.displayName);
+  const main=document.createElement("div");main.className="row-main";
+  const n=document.createElement("div");n.className="row-title";n.textContent=u.displayName||"WapCity user";
+  const s=document.createElement("div");s.className="row-sub";
+  s.textContent="@"+(u.username||"user")+(u.bio?" · "+u.bio:"");
+  const arrow=document.createElement("div");arrow.style.color="var(--g)";arrow.textContent="›";
+  main.append(n,s);row.append(av,main,arrow);row.onclick=()=>openChat(u);list.append(row);
+ });
+}
+$("userSearch").oninput=()=>renderUsers($("userSearch").value);
+
+async function openChat(peer){
+ if(!currentUser||!peer?.uid)return;
+ activePeer=peer;
+ activeChatId=[currentUser.uid,peer.uid].sort().join("__");
+ $("chatName").textContent=peer.displayName||peer.username;
+ $("chatUsername").textContent="@"+(peer.username||"");
+ $("chatAvatar").textContent=initials(peer.displayName);
+ showView("chatView");
+ $("messages").innerHTML='<div class="empty">মেসেজ লোড হচ্ছে…</div>';
+ try{
+  const ref=doc(db,"wapcityChats",activeChatId);
+  await setDoc(ref,{
+   participants:[currentUser.uid,peer.uid].sort(),
+   createdAt:serverTimestamp()
+  },{merge:true});
+  if(stopMessages)stopMessages();
+  const q=query(
+   collection(db,"wapcityChats",activeChatId,"messages"),
+   orderBy("createdAt","asc"),limit(300)
+  );
+  stopMessages=onSnapshot(q,ss=>{
+   const box=$("messages");box.innerHTML="";
+   if(ss.empty){
+    box.innerHTML='<div class="empty">এখনও মেসেজ নেই। প্রথম মেসেজ পাঠাও 👋</div>';
+    return;
+   }
+   ss.docs.forEach(d=>{
+    const m=d.data(),b=document.createElement("div");
+    b.className="msg "+(m.senderId===currentUser.uid?"mine":"theirs");
+    const body=document.createElement("div");body.textContent=m.text||"";
+    const meta=document.createElement("div");meta.className="meta";meta.textContent=timeOf(m.createdAt);
+    b.append(body,meta);box.append(b);
+   });
+   box.scrollTop=box.scrollHeight;
+  },err=>console.error("Message listener:",err));
+ }catch(err){
+  showView("homeView");
+  alert("চ্যাট খুলতে সমস্যা: "+friendly(err));
+ }
+}
+
+$("messageForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const text=$("messageText").value.trim();
+ if(!text||!activeChatId||!currentUser)return;
+ $("sendBtn").disabled=true;
+ try{
+  await addDoc(collection(db,"wapcityChats",activeChatId,"messages"),{
+   text,senderId:currentUser.uid,createdAt:serverTimestamp()
+  });
+  $("messageText").value="";$("messageText").focus();
+ }catch(err){alert("মেসেজ পাঠানো যায়নি: "+friendly(err))}
+ finally{$("sendBtn").disabled=false}
+});
+
+$("backBtn").onclick=()=>{
+ if(stopMessages){stopMessages();stopMessages=null}
+ activePeer=null;activeChatId=null;showView("homeView");
+};
+$("headerProfile").onclick=()=>openProfile();
+$("myProfileBtn").onclick=()=>openProfile();
+$("profileBack").onclick=()=>showView("homeView");
+$("profileLogout").onclick=()=>signOut(auth);
+$("logoutBtn").onclick=()=>signOut(auth);
+document.querySelectorAll(".navbtn").forEach(b=>
+ b.onclick=()=>b.dataset.view==="profile"?openProfile():showView("homeView")
+);
+
+$("setupForm").addEventListener("submit",async e=>{
+ e.preventDefault();clearNotice("setupNotice");
+ const displayName=$("displayName").value.trim();
+ const username=$("username").value.trim().toLowerCase();
+ if(!/^[a-z0-9_]{3,20}$/.test(username)){
+  notice("setupNotice","Username ৩–২০ অক্ষর; শুধু ইংরেজি ছোট হাতের অক্ষর, সংখ্যা ও _।","error");
+  return;
+ }
+ $("setupBtn").disabled=true;
+ try{
+  const unRef=doc(db,"wapcityUsernames",username);
+  const unSnap=await getDoc(unRef);
+  if(unSnap.exists()&&unSnap.data().uid!==currentUser.uid)
+   throw new Error("এই username নেওয়া আছে। অন্যটি বেছে নাও।");
+  await setDoc(unRef,{uid:currentUser.uid});
+  await setDoc(doc(db,"wapcityUsers",currentUser.uid),{
+   uid:currentUser.uid,displayName,username,bio:"",createdAt:serverTimestamp()
+  });
+  await updateProfile(currentUser,{displayName});
+  showView("homeView");watchUsers();
+ }catch(err){notice("setupNotice",friendly(err),"error")}
+ finally{$("setupBtn").disabled=false}
+});
+
+async function openProfile(){
+ if(!currentUser)return;
+ try{
+  const s=await getDoc(doc(db,"wapcityUsers",currentUser.uid));
+  currentProfile=s.exists()?s.data():{};
+  $("profileDisplayName").textContent=currentProfile.displayName||"WapCity user";
+  $("profileUsername").textContent="@"+(currentProfile.username||"");
+  $("profileAvatar").textContent=initials(currentProfile.displayName);
+  $("editName").value=currentProfile.displayName||"";
+  $("editBio").value=currentProfile.bio||"";
+  $("profilePhone").textContent=currentUser.phoneNumber||"—";
+  clearNotice("profileNotice");showView("profileView");
+ }catch(e){
+  notice("profileNotice",friendly(e),"error");showView("profileView");
+ }
+}
+$("profileForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const displayName=$("editName").value.trim();
+ const bio=$("editBio").value.trim();
+ try{
+  await setDoc(doc(db,"wapcityUsers",currentUser.uid),{displayName,bio},{merge:true});
+  await updateProfile(currentUser,{displayName});
+  $("profileDisplayName").textContent=displayName;
+  $("profileAvatar").textContent=initials(displayName);
+  notice("profileNotice","Profile Save হয়েছে।","success");
+ }catch(err){notice("profileNotice",friendly(err),"error")}
+});
+
+if(ready()){
+ try{
+  app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
+  onAuthStateChanged(auth,async user=>{
+   currentUser=user;
+   if(!user){
+    if(stopUsers){stopUsers();stopUsers=null}
+    if(stopMessages){stopMessages();stopMessages=null}
+    showView("authView");return;
+   }
+   try{
+    const snap=await getDoc(doc(db,"wapcityUsers",user.uid));
+    if(!snap.exists()){showView("setupView");return}
+    showView("homeView");watchUsers();
+   }catch(err){
+    showView("authView");
+    notice("authNotice","Profile/Firestore error: "+friendly(err),"error");
+   }
+  });
+ }catch(err){notice("authNotice","Firebase চালু হয়নি: "+friendly(err),"error")}
+}else{
+ notice("authNotice","প্রথমে firebaseConfig-এ নিজের Firebase Web App config বসাও।","error");
+}
+</script>
+</body>
+</html>
